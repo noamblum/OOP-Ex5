@@ -65,7 +65,7 @@ public class Terrain {
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR));
                 Block newBlock = new Block(WorldGridConvertor.gridToWorld(i, j), groundBlockColor);
                 newBlock.setTag(TAG);
-                gameObjects.addGameObject(newBlock);
+                gameObjects.addGameObject(newBlock, groundLayer);
             }
         }
     }
