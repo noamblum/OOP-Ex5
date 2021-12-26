@@ -63,5 +63,7 @@ public class Avatar extends GameObject {
         transform().setVelocityX(xVel);
         if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && getVelocity().y() == 0)
             transform().setVelocityY(VELOCITY_Y);
+        if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && inputListener.isKeyPressed(KeyEvent.VK_SHIFT))
+            transform().setVelocityY(VELOCITY_Y);
     }
 }
