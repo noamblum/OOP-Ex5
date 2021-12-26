@@ -18,6 +18,7 @@ import pepse.world.Terrain;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
+import pepse.world.trees.Tree;
 
 import java.awt.*;
 
@@ -46,6 +47,7 @@ public class PepseGameManager extends GameManager {
 
     private Avatar avatar;
     private Terrain terrain;
+    private Tree trees;
 
     public PepseGameManager(String windowTitle) {
         super(windowTitle);
@@ -73,6 +75,7 @@ public class PepseGameManager extends GameManager {
 
 
         terrain = new Terrain(gameObjects(),Layer.STATIC_OBJECTS,windowController.getWindowDimensions(),1);
+        trees = new Tree(gameObjects(), terrain::groundGridHeightAt);
         Vector2 avatarStartingPosition = new Vector2(0, terrain.groundHeightAt(0) - Avatar.AVATAR_SIZE);
         createTerrainInRange(avatarStartingPosition);
         avatar = Avatar.create(gameObjects(),
@@ -82,6 +85,7 @@ public class PepseGameManager extends GameManager {
                 imageReader);
         setCamera(new Camera(avatar,Vector2.UP.mult(150),windowController.getWindowDimensions(),
                 windowController.getWindowDimensions()));
+
 
         showPlayerCoordinates();
     }
@@ -109,6 +113,8 @@ public class PepseGameManager extends GameManager {
         minTerrainX = (int) avatarGridCoordinates.x() - (renderWidth / 2);
         maxTerrainX = (int) avatarGridCoordinates.x() + (renderWidth / 2);
         terrain.createInRange(minTerrainX,maxTerrainX);
+        trees.createInRange(minTerrainX,maxTerrainX);
+
     }
 
 

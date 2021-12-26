@@ -12,6 +12,7 @@ import java.awt.*;
  * Represents the halo of sun.
  */
 public class SunHalo{
+    public static final String TAG = "SunHalo";
     private static GameObject sunHalo;
     private static GameObject sunToFollow;
     /**
@@ -36,6 +37,7 @@ public class SunHalo{
         sunHalo.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sunHalo, layer);
         sun.addComponent(SunHalo::followSun);
+        sunHalo.setTag(TAG);
         return sunHalo;
     }
 
