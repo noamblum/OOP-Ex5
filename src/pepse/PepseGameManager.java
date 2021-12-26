@@ -8,6 +8,7 @@ import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
 import danogl.util.Vector2;
 import pepse.world.Sky;
+import pepse.world.Terrain;
 import pepse.world.daynight.Night;
 
 public class PepseGameManager extends GameManager {
@@ -29,6 +30,8 @@ public class PepseGameManager extends GameManager {
         Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
         Night.create(gameObjects(), Layer.FOREGROUND,
                 windowController.getWindowDimensions(), DAY_NIGHT_CYCLE_TIME);
+        Terrain terrain = new Terrain(gameObjects(),3,windowController.getWindowDimensions(),1);
+        terrain.createInRange(0,700);
     }
 
     public static void main(String[] args) {
