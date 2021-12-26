@@ -31,7 +31,7 @@ public class PepseGameManager extends GameManager {
         Night.create(gameObjects(), Layer.FOREGROUND,
                 windowController.getWindowDimensions(), DAY_NIGHT_CYCLE_TIME);
         Terrain terrain = new Terrain(gameObjects(),3,windowController.getWindowDimensions(),1);
-        terrain.createInRange(0,700);
+        terrain.createInRange(0,30);
     }
 
     public static void main(String[] args) {
