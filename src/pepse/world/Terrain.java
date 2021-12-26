@@ -8,6 +8,9 @@ import pepse.util.ColorSupplier;
 import pepse.util.WorldGridConvertor;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Responsible for the creation and management of terrain.
@@ -20,6 +23,8 @@ public class Terrain {
     private final int groundLayer;
     private final float groundHeightAtX0;
     private final Vector2 windowDimensions;
+
+    private final Map<Vector2, GameObject> blocks = new HashMap<>();
 
     /**
      * Constructor
@@ -61,11 +66,24 @@ public class Terrain {
     public void createInRange(int minX, int maxX) {
         for (int i = minX; i <= maxX; i++) {
             for (int j = (int) groundGridHeightAt(i); j < windowDimensions.y(); j++) {
+                if (blocks.containsKey(new Vector2(i,j))) continue;
                 RectangleRenderable groundBlockColor = new RectangleRenderable(
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR));
                 Block newBlock = new Block(WorldGridConvertor.gridToWorld(i, j), groundBlockColor);
                 newBlock.setTag(TAG);
+                blocks.put(new Vector2(i,j), newBlock);
                 gameObjects.addGameObject(newBlock, groundLayer);
+            }
+        }
+        dropBlocksOutsideRange(minX, maxX);
+    }
+
+    private void dropBlocksOutsideRange(int minX, int maxX) {
+        for (Iterator<Vector2> it = blocks.keySet().iterator(); it.hasNext() ;){
+            Vector2 coordinate = it.next();
+            if ( coordinate.x() < minX || coordinate.x() > maxX){
+                gameObjects.removeGameObject(blocks.get(coordinate), groundLayer);
+                it.remove();
             }
         }
     }
@@ -76,7 +94,7 @@ public class Terrain {
      * @param x The x location
      * @return The grid height at the specified location
      */
-    public float groundGridHeightAt(float x) {
+    private float groundGridHeightAt(float x) {
         return this.groundHeightAtX0;
     }
 }
