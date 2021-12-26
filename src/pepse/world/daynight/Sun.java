@@ -15,10 +15,13 @@ import java.awt.*;
 public class Sun {
 
     public static final String TAG = "Sun";
+    public static final Vector2 sunDimensions = Vector2.ONES.mult(80);
+
 
     private static GameObject sun;
-    public static final Vector2 sunDimensions = Vector2.ONES.mult(80);
     private static Vector2 WindowDimensions;
+    private static float cycleRadius;
+
 
     /**
      * Creates the Object Sun and sets its movement over the screen
@@ -39,6 +42,7 @@ public class Sun {
                 sunDimensions,
                 new OvalRenderable(Color.YELLOW));
         WindowDimensions = windowDimensions;
+        cycleRadius = windowDimensions.y() / 2;
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sun, layer);
         new Transition<>(
@@ -60,7 +64,7 @@ public class Sun {
      * @param angleInSky - represents the angle of the rotation.
      */
     private static void setSunPosition(float angleInSky){
-     sun.setCenter(WindowDimensions.mult(0.5f).add(Vector2.UP.mult(100).rotated(angleInSky)));
+     sun.setCenter(WindowDimensions.mult(0.5f).add(Vector2.UP.mult(cycleRadius).rotated(angleInSky)));
     }
 
 

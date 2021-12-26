@@ -33,7 +33,7 @@ public class SunHalo{
                 Vector2.ZERO,
                 Sun.sunDimensions.mult(1.2f),
                 new OvalRenderable(color));
-        sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
+        sunHalo.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sunHalo, layer);
         sun.addComponent(SunHalo::followSun);
         return sunHalo;

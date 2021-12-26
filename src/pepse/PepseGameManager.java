@@ -67,7 +67,8 @@ public class PepseGameManager extends GameManager {
         Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
         Night.create(gameObjects(), Layer.FOREGROUND,
                 windowController.getWindowDimensions(), DAY_NIGHT_CYCLE_TIME);
-        GameObject sun = Sun.create(windowController.getWindowDimensions(),3, gameObjects(), Layer.BACKGROUND+1);
+        GameObject sun = Sun.create(windowController.getWindowDimensions(),DAY_NIGHT_CYCLE_TIME, gameObjects(),
+                Layer.BACKGROUND+1);
         SunHalo.create(gameObjects(),sun, SUN_HALO_COLOR, Layer.BACKGROUND + 10);
 
 
