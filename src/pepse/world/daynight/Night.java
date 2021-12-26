@@ -13,9 +13,9 @@ import java.awt.*;
  */
 public class Night {
 
-    public static final Color DARKNESS_COLOR = Color.BLACK;
     public static final String DAY_NIGHT_TAG = "DayNightCycle";
 
+    private static final Color DARKNESS_COLOR = Color.BLACK;
     private static final float DAY_OPACITY = 0;
     private static final float NIGHT_OPACITY = 0.5f;
 

@@ -12,8 +12,9 @@ import java.awt.*;
  */
 public class Sky {
 
-    public static final Color SKY_COLOR = Color.decode("#80C6E5");
     public static final String SKY_TAG = "Sky";
+
+    private static final Color SKY_COLOR = Color.decode("#80C6E5");
 
     /**
      * Create the background sky
