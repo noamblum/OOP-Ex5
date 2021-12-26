@@ -15,10 +15,10 @@ public class Terrain {
     public static final String TAG = "Terrain";
 
     private static final Color BASE_GROUND_COLOR = new Color(212, 123, 74);
-    private GameObjectCollection gameObjects;
-    private int groundLayer;
-    private float groundHeightAtX0;
-    private Vector2 windowDimensions;
+    private final GameObjectCollection gameObjects;
+    private final int groundLayer;
+    private final float groundHeightAtX0;
+    private final Vector2 windowDimensions;
 
     /**
      *Constructor
