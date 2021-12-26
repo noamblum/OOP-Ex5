@@ -17,7 +17,8 @@ public class Sun {
     public static final String TAG = "Sun";
 
     private static GameObject sun;
-    private static Vector2 windowDimensions;
+    public static final Vector2 sunDimensions = Vector2.ONES.mult(80);
+    private static Vector2 WindowDimensions;
 
     /**
      * Creates the Object Sun and sets its movement over the screen
@@ -33,11 +34,11 @@ public class Sun {
             float cycleLength,
             GameObjectCollection gameObjects,
             int layer){
-        Sun.windowDimensions = windowDimensions;
         sun = new GameObject(
                 Vector2.ZERO,
-                windowDimensions,
+                sunDimensions,
                 new OvalRenderable(Color.YELLOW));
+        WindowDimensions = windowDimensions;
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sun, layer);
         new Transition<>(
@@ -59,8 +60,9 @@ public class Sun {
      * @param angleInSky - represents the angle of the rotation.
      */
     private static void setSunPosition(float angleInSky){
-     sun.setCenter(windowDimensions.mult(0.5f).add(Vector2.UP.mult(100).rotated(angleInSky)));
+     sun.setCenter(WindowDimensions.mult(0.5f).add(Vector2.UP.mult(100).rotated(angleInSky)));
     }
+
 
 
 }
