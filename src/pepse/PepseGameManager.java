@@ -16,11 +16,16 @@ import pepse.world.Avatar;
 import pepse.world.Sky;
 import pepse.world.Terrain;
 import pepse.world.daynight.Night;
+import pepse.world.daynight.Sun;
+import pepse.world.daynight.SunHalo;
+
+import java.awt.*;
 
 public class PepseGameManager extends GameManager {
 
     private static final float DAY_NIGHT_CYCLE_TIME = 10;
     private static final int TARGET_FRAMERATE = 60;
+    private static final Color SUN_HALO_COLOR = new Color(255, 255, 0, 20);
 
     private Vector2 windowGridDimensions;
 
@@ -62,6 +67,8 @@ public class PepseGameManager extends GameManager {
         Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
         Night.create(gameObjects(), Layer.FOREGROUND,
                 windowController.getWindowDimensions(), DAY_NIGHT_CYCLE_TIME);
+        GameObject sun = Sun.create(windowController.getWindowDimensions(),3, gameObjects(), Layer.BACKGROUND+1);
+        SunHalo.create(gameObjects(),sun, SUN_HALO_COLOR, Layer.BACKGROUND + 10);
 
 
         terrain = new Terrain(gameObjects(),Layer.STATIC_OBJECTS,windowController.getWindowDimensions(),1);
@@ -102,6 +109,7 @@ public class PepseGameManager extends GameManager {
         maxTerrainX = (int) avatarGridCoordinates.x() + (renderWidth / 2);
         terrain.createInRange(minTerrainX,maxTerrainX);
     }
+
 
     public static void main(String[] args) {
         new PepseGameManager("PEPSE").run();
