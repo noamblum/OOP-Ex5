@@ -16,6 +16,10 @@ public class PepseGameManager extends GameManager {
     private static final float DAY_NIGHT_CYCLE_TIME = 10;
     private static final int TARGET_FRAMERATE = 60;
 
+    public PepseGameManager(String windowTitle) {
+        super(windowTitle);
+    }
+
     public PepseGameManager(String windowTitle, Vector2 windowDimensions) {
         super(windowTitle, windowDimensions);
     }
@@ -35,6 +39,6 @@ public class PepseGameManager extends GameManager {
     }
 
     public static void main(String[] args) {
-        new PepseGameManager("PEPSE", new Vector2(700, 500)).run();
+        new PepseGameManager("PEPSE").run();
     }
 }
