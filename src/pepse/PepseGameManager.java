@@ -10,6 +10,7 @@ import danogl.util.Vector2;
 import pepse.world.Sky;
 import pepse.world.Terrain;
 import pepse.world.daynight.Night;
+import pepse.world.daynight.Sun;
 
 public class PepseGameManager extends GameManager {
 
@@ -32,6 +33,7 @@ public class PepseGameManager extends GameManager {
                 windowController.getWindowDimensions(), DAY_NIGHT_CYCLE_TIME);
         Terrain terrain = new Terrain(gameObjects(),3,windowController.getWindowDimensions(),1);
         terrain.createInRange(0,700);
+        Sun.create(windowController.getWindowDimensions(),3, gameObjects(), Layer.BACKGROUND+1);
     }
 
     public static void main(String[] args) {
