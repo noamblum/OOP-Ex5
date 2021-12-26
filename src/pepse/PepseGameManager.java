@@ -8,8 +8,11 @@ import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
 import danogl.util.Vector2;
 import pepse.world.Sky;
+import pepse.world.daynight.Night;
 
 public class PepseGameManager extends GameManager {
+
+    private static final float DAY_NIGHT_CYCLE_TIME = 10;
 
     public PepseGameManager(String windowTitle, Vector2 windowDimensions) {
         super(windowTitle, windowDimensions);
@@ -22,9 +25,11 @@ public class PepseGameManager extends GameManager {
                                WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
+        Night.create(gameObjects(), Layer.FOREGROUND,
+                windowController.getWindowDimensions(), DAY_NIGHT_CYCLE_TIME);
     }
 
     public static void main(String[] args) {
-        new PepseGameManager("PEPSE", new Vector2(700,500)).run();
+        new PepseGameManager("PEPSE", new Vector2(700, 500)).run();
     }
 }
