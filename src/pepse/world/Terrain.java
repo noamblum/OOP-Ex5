@@ -94,7 +94,7 @@ public class Terrain {
      * @param x The x location
      * @return The grid height at the specified location
      */
-    private float groundGridHeightAt(float x) {
+    public float groundGridHeightAt(float x) {
         return this.groundHeightAtX0;
     }
 }
