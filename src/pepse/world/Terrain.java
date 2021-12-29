@@ -25,6 +25,7 @@ public class Terrain {
     private static final int PERLIN_NOISE_WAVE_LENGTH = 32;
     private static final int PERLIN_NOISE_OCTAVES = 4;
     private static final int PERLIN_NOISE_DIVISOR = 2;
+    private static final float TERRAIN_RENDER_DISTANCE_FACTOR = 1.7f;
     private final GameObjectCollection gameObjects;
     private final int groundLayer;
     private final float groundHeightAtX0;
@@ -76,7 +77,10 @@ public class Terrain {
      */
     public void createInRange(int minX, int maxX) {
         for (int i = minX; i <= maxX; i++) {
-            for (int j = (int) groundGridHeightAt(i); j <= groundGridHeightAt(i) + windowDimensions.y() / 2; j++) {
+            float baseGroundHeight = groundGridHeightAt(i);
+            for (int j = (int) baseGroundHeight;
+                 j <= baseGroundHeight + windowDimensions.y() / TERRAIN_RENDER_DISTANCE_FACTOR;
+                 j++) {
                 if (activeBlocks.containsKey(new Vector2(i,j))) continue;
                 RectangleRenderable groundBlockColor = new RectangleRenderable(
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR));
