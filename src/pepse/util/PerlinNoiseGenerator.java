@@ -95,11 +95,11 @@ public class PerlinNoiseGenerator {
             if (x % waveLength == 0) {
                 leftEdgeHeight = rightEdgeHeight;
                 rightEdgeHeight = rng.nextFloat();
-                noiseMap[x] = (maxHeight / 2) + (leftEdgeHeight * amplitude);
+                noiseMap[x] = (leftEdgeHeight * amplitude);
             } else {
                 float calculatedHeight = cosineInterpolate(leftEdgeHeight, rightEdgeHeight,
                         (float) (x % waveLength) / waveLength);
-                noiseMap[x] = (maxHeight / 2) + (calculatedHeight * amplitude);
+                noiseMap[x] = (calculatedHeight * amplitude);
             }
         }
         return noiseMap;

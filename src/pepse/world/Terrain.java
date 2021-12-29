@@ -76,8 +76,7 @@ public class Terrain {
      */
     public void createInRange(int minX, int maxX) {
         for (int i = minX; i <= maxX; i++) {
-            float x = groundGridHeightAt(i);
-            for (int j = (int) groundGridHeightAt(i); j < windowDimensions.y(); j++) {
+            for (int j = (int) groundGridHeightAt(i); j <= groundGridHeightAt(i) + windowDimensions.y() / 2; j++) {
                 if (activeBlocks.containsKey(new Vector2(i,j))) continue;
                 RectangleRenderable groundBlockColor = new RectangleRenderable(
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR));
