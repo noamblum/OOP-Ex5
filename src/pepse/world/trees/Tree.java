@@ -20,26 +20,26 @@ import java.util.function.Function;
  */
 public class Tree {
 
-    TreeMap<Integer, Set<GameObject>> map = new TreeMap<>();
+    private final TreeMap<Integer, Set<GameObject>> treesInWorld = new TreeMap<>();
     private Set<Integer> activeTrees = new HashSet<>();
-    private GameObjectCollection objectCollection;
-    private Function<Float, Float> func;
+    private final GameObjectCollection objectCollection;
+    private final Function<Float, Float> getTreeBaseHeight;
 
     /**
      * Unit of measures in Blocks
      */
-    private final int TREE_HEIGHT = 10;
+    private static final int TREE_HEIGHT = 10;
     private static final Color TREE_COLOR = new Color(100, 50, 20);
 
     /**
      * Constructor
      * @param objectCollection - gamObjectCollection
-     * @param func - the function which represents the height of the terrain.
+     * @param getTreeBaseHeight - the function which represents the height of the terrain.
      */
-    public Tree(GameObjectCollection objectCollection, Function<Float, Float> func) {
+    public Tree(GameObjectCollection objectCollection, Function<Float, Float> getTreeBaseHeight) {
 
         this.objectCollection = objectCollection;
-        this.func = func;
+        this.getTreeBaseHeight = getTreeBaseHeight;
     }
 
     /**
@@ -53,8 +53,8 @@ public class Tree {
         Set<Integer> newTrees = new HashSet<>();
         RectangleRenderable rectangle = new RectangleRenderable(TREE_COLOR);
         for (int i = minX; i <= maxX; i++) {
-            if ((map.size() > 0) && i >= map.firstKey() && i <= map.lastKey()) {
-                if (map.containsKey(i)) newTrees.add(i);
+            if ((treesInWorld.size() > 0) && i >= treesInWorld.firstKey() && i <= treesInWorld.lastKey()) {
+                if (treesInWorld.containsKey(i)) newTrees.add(i);
                 continue;
             }
             if (rand.nextInt(10) == 0) {
@@ -74,9 +74,11 @@ public class Tree {
      */
     private void addTreeAt(int x){
         if (activeTrees.contains(x)) return;
-        Set<GameObject> blockSet = map.get(x);
+        Set<GameObject> blockSet = treesInWorld.get(x);
         for(GameObject block : blockSet){
-            objectCollection.addGameObject(block, Layer.STATIC_OBJECTS);
+            int layer = block.getTag().equals(Leaf.LEAF_TAG) ?
+                    Layer.STATIC_OBJECTS + 1 : Layer.STATIC_OBJECTS;
+            objectCollection.addGameObject(block, layer);
         }
     }
 
@@ -85,9 +87,11 @@ public class Tree {
      * @param x - represent a tree in the set
      */
     private void removeTreeAt(int x){
-        Set<GameObject> blockSet = map.get(x);
+        Set<GameObject> blockSet = treesInWorld.get(x);
         for(GameObject block : blockSet){
-            objectCollection.removeGameObject(block, Layer.STATIC_OBJECTS);
+            int layer = block.getTag().equals(Leaf.LEAF_TAG) ?
+                    Layer.STATIC_OBJECTS + 1 : Layer.STATIC_OBJECTS;
+            objectCollection.removeGameObject(block, layer);
         }
     }
 
@@ -98,7 +102,7 @@ public class Tree {
      */
         private void treeMapCreator(int index, RectangleRenderable rectangle){
             Set<GameObject> set = new HashSet<>();
-            int groundHeight = func.apply((float) index).intValue();
+            int groundHeight = getTreeBaseHeight.apply((float) index).intValue();
             for (int j = groundHeight - TREE_HEIGHT; j < groundHeight; j++) {
                 Block subTreeTrunk = new Block(WorldGridConvertor.gridToWorld(index, j), rectangle);
                 set.add(subTreeTrunk);
@@ -110,7 +114,7 @@ public class Tree {
                     set.add(newLeaf);
                 }
             }
-            map.put(index,set);
+            treesInWorld.put(index,set);
         }
 }
 

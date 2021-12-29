@@ -13,17 +13,20 @@ import java.awt.*;
  */
 public class Leaf {
 
+    public static final String LEAF_TAG = "Leaf";
     private static final Color LEAF_COLOR = new Color(50, 200, 30);
 
     /**
      * Creates a Leaf
+     *
      * @param topLeftCorner - topLeftCorner of a leaf
      * @return newLeaf
      */
-    public static GameObject create(Vector2 topLeftCorner){
+    public static GameObject create(Vector2 topLeftCorner) {
         RectangleRenderable renderable = new RectangleRenderable(LEAF_COLOR);
-        Block newLeaf = new Block(WorldGridConvertor.gridToWorld(topLeftCorner),renderable);
+        Block newLeaf = new Block(WorldGridConvertor.gridToWorld(topLeftCorner), renderable);
         newLeaf.physics().preventIntersectionsFromDirection(null);
+        newLeaf.setTag(LEAF_TAG);
         return newLeaf;
 
     }
