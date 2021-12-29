@@ -9,10 +9,7 @@ import pepse.util.WorldGridConvertor;
 import pepse.world.Block;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -20,10 +17,19 @@ import java.util.function.Function;
  */
 public class Tree {
 
-    private final TreeMap<Integer, Set<GameObject>> treesInWorld = new TreeMap<>();
+    private final Map<Integer, Set<GameObject>> treesInWorld = new HashMap<>();
     private Set<Integer> activeTrees = new HashSet<>();
     private final GameObjectCollection objectCollection;
     private final Function<Float, Float> getTreeBaseHeight;
+
+    /**
+     * The index of the leftmost calculated tree location
+     */
+    private int minGeneratedX = 0;
+    /**
+     * The index of the rightmost calculated tree location
+     */
+    private int maxGeneratedX = 0;
 
     /**
      * Unit of measures in Blocks
@@ -53,11 +59,10 @@ public class Tree {
         Set<Integer> newTrees = new HashSet<>();
         RectangleRenderable rectangle = new RectangleRenderable(TREE_COLOR);
         for (int i = minX; i <= maxX; i++) {
-            if ((treesInWorld.size() > 0) && i >= treesInWorld.firstKey() && i <= treesInWorld.lastKey()) {
+            if (i >= minGeneratedX && i <= maxGeneratedX) {
                 if (treesInWorld.containsKey(i)) newTrees.add(i);
-                continue;
             }
-            if (rand.nextInt(10) == 0) {
+            else if (rand.nextInt(10) == 0) {
                 treeMapCreator(i,rectangle);
                 newTrees.add(i);
             }
@@ -66,6 +71,8 @@ public class Tree {
         activeTrees.removeAll(newTrees);
         activeTrees.forEach(this::removeTreeAt);
         activeTrees = newTrees;
+        minGeneratedX = Math.min(minX, minGeneratedX);
+        maxGeneratedX = Math.max(maxX, maxGeneratedX);
     }
 
     /**
