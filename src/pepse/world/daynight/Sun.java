@@ -17,6 +17,10 @@ public class Sun {
     public static final String TAG = "Sun";
     public static final Vector2 sunDimensions = Vector2.ONES.mult(80);
 
+    /**
+     * How much the circular motions is "squished"
+     */
+    private static final float SUN_ELLIPSE_FACTOR = 1.5f;
 
     private static GameObject sun;
     private static Vector2 WindowDimensions;
@@ -25,10 +29,11 @@ public class Sun {
 
     /**
      * Creates the Object Sun and sets its movement over the screen
+     *
      * @param windowDimensions - screen dimensions
-     * @param cycleLength - Total time for a cycle
-     * @param gameObjects - gameObject
-     * @param layer - represents the Layer which the sun will be placed.
+     * @param cycleLength      - Total time for a cycle
+     * @param gameObjects      - gameObject
+     * @param layer            - represents the Layer which the sun will be placed.
      * @return - An object of Sun.
      */
 
@@ -36,13 +41,13 @@ public class Sun {
             Vector2 windowDimensions,
             float cycleLength,
             GameObjectCollection gameObjects,
-            int layer){
+            int layer) {
         sun = new GameObject(
                 Vector2.ZERO,
                 sunDimensions,
                 new OvalRenderable(Color.YELLOW));
         WindowDimensions = windowDimensions;
-        cycleRadius = windowDimensions.y() / 2;
+        cycleRadius = windowDimensions.y() / 1.6f;
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sun, layer);
         new Transition<>(
@@ -56,17 +61,20 @@ public class Sun {
                 null
         );
         sun.setTag(TAG);
-    return sun;
+        return sun;
     }
 
     /**
      * Calculate the changing sun position coordinates for the cycle of the sun.
+     *
      * @param angleInSky - represents the angle of the rotation.
      */
-    private static void setSunPosition(float angleInSky){
-     sun.setCenter(WindowDimensions.mult(0.5f).add(Vector2.UP.mult(cycleRadius).rotated(angleInSky)));
+    private static void setSunPosition(float angleInSky) {
+        Vector2 directionFromCenter =
+                Vector2.UP.mult(cycleRadius).rotated(angleInSky).multX(SUN_ELLIPSE_FACTOR);
+        Vector2 cycleMidPoint = WindowDimensions.multX(0.5f).multY(0.65f);
+        sun.setCenter(cycleMidPoint.add(directionFromCenter));
     }
-
 
 
 }
