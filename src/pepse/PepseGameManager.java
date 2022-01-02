@@ -89,14 +89,15 @@ public class PepseGameManager extends GameManager {
                 windowController.getWindowDimensions()));
 
 
-        showPlayerCoordinates();
+        showAvatarEnergy();
     }
 
-    private void showPlayerCoordinates() {
+    private void showAvatarEnergy() {
         TextRenderable text = new TextRenderable("0");
         GameObject playerLocation = new GameObject(Vector2.ZERO, Vector2.ONES.mult(30), text);
         playerLocation.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-        playerLocation.addComponent((deltaTime) -> text.setString(avatar.getCenter().toString()));
+        playerLocation.addComponent((deltaTime) -> text.setString(
+                String.format("Energy: %.1f", avatar.getCurrentFlightEnergy())));
         gameObjects().addGameObject(playerLocation, Layer.UI);
     }
 
