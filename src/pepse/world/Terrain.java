@@ -9,9 +9,7 @@ import pepse.util.ProceduralPerlinMap;
 import pepse.util.WorldGridConvertor;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Responsible for the creation and management of terrain.
@@ -28,11 +26,10 @@ public class Terrain {
     private static final float TERRAIN_RENDER_DISTANCE_FACTOR = 1.7f;
     private final GameObjectCollection gameObjects;
     private final int groundLayer;
-    private final float groundHeightAtX0;
     private final Vector2 windowDimensions;
     private final ProceduralPerlinMap heightMap;
 
-    private final Map<Vector2, GameObject> activeBlocks = new HashMap<>();
+    private final Map<Integer, Set<GameObject>> activeBlocks = new HashMap<>();
 
     /**
      * Constructor
@@ -55,7 +52,6 @@ public class Terrain {
                 seed, PERLIN_NOISE_BLOCK_WIDTH, this.windowDimensions.y() / 2,
                 this.windowDimensions.y() / PERLIN_NOISE_AMPLITUDE_FACTOR,
                 PERLIN_NOISE_WAVE_LENGTH, PERLIN_NOISE_OCTAVES, PERLIN_NOISE_DIVISOR);
-        this.groundHeightAtX0 = groundGridHeightAt(0);
     }
 
     /**
@@ -78,26 +74,30 @@ public class Terrain {
     public void createInRange(int minX, int maxX) {
         for (int i = minX; i <= maxX; i++) {
             float baseGroundHeight = groundGridHeightAt(i);
+            if (activeBlocks.containsKey(i)) continue;
+            Set<GameObject> groundBlocks = new HashSet<>();
             for (int j = (int) baseGroundHeight;
                  j <= baseGroundHeight + windowDimensions.y() / TERRAIN_RENDER_DISTANCE_FACTOR;
                  j++) {
-                if (activeBlocks.containsKey(new Vector2(i,j))) break;
                 RectangleRenderable groundBlockColor = new RectangleRenderable(
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR));
                 Block newBlock = new Block(WorldGridConvertor.gridToWorld(i, j), groundBlockColor);
                 newBlock.setTag(TAG);
-                activeBlocks.put(new Vector2(i,j), newBlock);
+                groundBlocks.add(newBlock);
                 gameObjects.addGameObject(newBlock, groundLayer);
             }
+            activeBlocks.put(i, groundBlocks);
         }
         dropBlocksOutsideRange(minX, maxX);
     }
 
     private void dropBlocksOutsideRange(int minX, int maxX) {
-        for (Iterator<Vector2> it = activeBlocks.keySet().iterator(); it.hasNext() ;){
-            Vector2 coordinate = it.next();
-            if ( coordinate.x() < minX || coordinate.x() > maxX){
-                gameObjects.removeGameObject(activeBlocks.get(coordinate), groundLayer);
+        for (Iterator<Integer> it = activeBlocks.keySet().iterator(); it.hasNext() ;){
+            Integer coordinate = it.next();
+            if ( coordinate < minX || coordinate > maxX){
+                for (GameObject block: activeBlocks.get(coordinate)) {
+                    gameObjects.removeGameObject(block, groundLayer);
+                }
                 it.remove();
             }
         }
