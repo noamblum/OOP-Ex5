@@ -21,6 +21,7 @@ public class Avatar extends GameObject {
     private static final int MIN_FLIGHT_ENERGY = 0;
     private static final float VELOCITY_X = 300;
     private static final float VELOCITY_Y = -300;
+    private static final float MAX_VELOCITY_Y = 1000;
     private static final float GRAVITY = 500;
     private static final String IMAGE_RIGHT = "assets/hero_r.png";
     private static final String IMAGE_LEFT = "assets/hero_l.png";
@@ -29,6 +30,7 @@ public class Avatar extends GameObject {
     private static Renderable renderableRight;
     private static Renderable renderableLeft;
     private float currentFlightEnergy = MAX_FLIGHT_ENERGY;
+    private boolean flightMode = false;
 
     private Avatar(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable) {
         super(topLeftCorner, dimensions, renderable);
@@ -75,10 +77,16 @@ public class Avatar extends GameObject {
     public float getCurrentFlightEnergy(){return currentFlightEnergy;}
 
     private void handleJumpAndFlight() {
-        boolean isOnGround = getVelocity().y() == 0;
+        if (getVelocity().y() > MAX_VELOCITY_Y) {
+            Vector2 maxVelocity = new Vector2(getVelocity().x(), MAX_VELOCITY_Y);
+            setVelocity(maxVelocity);
+        }
 
-        if (isOnGround) currentFlightEnergy = Math.min(MAX_FLIGHT_ENERGY, currentFlightEnergy + 0.5f);
-        else currentFlightEnergy = Math.max(MIN_FLIGHT_ENERGY, currentFlightEnergy - 0.5f);
+        boolean isOnGround = getVelocity().y() == 0;
+        if (isOnGround) flightMode = false;
+
+        if (flightMode) currentFlightEnergy = Math.max(MIN_FLIGHT_ENERGY, currentFlightEnergy - 0.5f);
+        else currentFlightEnergy = Math.min(MAX_FLIGHT_ENERGY, currentFlightEnergy + 0.5f);
 
         // Jump
         if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && getVelocity().y() == 0)
@@ -86,8 +94,10 @@ public class Avatar extends GameObject {
 
         // Fly
         if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && inputListener.isKeyPressed(KeyEvent.VK_SHIFT) &&
-            currentFlightEnergy > MIN_FLIGHT_ENERGY)
+            currentFlightEnergy > MIN_FLIGHT_ENERGY) {
+            flightMode = true;
             transform().setVelocityY(VELOCITY_Y);
+        }
     }
 
     /**
