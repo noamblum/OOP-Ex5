@@ -81,7 +81,7 @@ public class Terrain {
             for (int j = (int) baseGroundHeight;
                  j <= baseGroundHeight + windowDimensions.y() / TERRAIN_RENDER_DISTANCE_FACTOR;
                  j++) {
-                if (activeBlocks.containsKey(new Vector2(i,j))) continue;
+                if (activeBlocks.containsKey(new Vector2(i,j))) break;
                 RectangleRenderable groundBlockColor = new RectangleRenderable(
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR));
                 Block newBlock = new Block(WorldGridConvertor.gridToWorld(i, j), groundBlockColor);
