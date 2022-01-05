@@ -23,12 +23,9 @@ public class Avatar extends GameObject {
     private static final float VELOCITY_Y = -300;
     private static final float MAX_VELOCITY_Y = 1000;
     private static final float GRAVITY = 500;
-    private static final String IMAGE_RIGHT = "assets/hero_r.png";
-    private static final String IMAGE_LEFT = "assets/hero_l.png";
+    private static final String AVATAR_IMAGE = "assets/hero.png";
 
     private UserInputListener inputListener;
-    private static Renderable renderableRight;
-    private static Renderable renderableLeft;
     private float currentFlightEnergy = MAX_FLIGHT_ENERGY;
     private boolean flightMode = false;
 
@@ -53,9 +50,8 @@ public class Avatar extends GameObject {
             Vector2 topLeftCorner,
             UserInputListener inputListener,
             ImageReader imageReader) {
-        renderableRight = imageReader.readImage(IMAGE_RIGHT, true);
-        renderableLeft = imageReader.readImage(IMAGE_LEFT, true);
-        Avatar avatar = new Avatar(topLeftCorner, Vector2.ONES.mult(AVATAR_SIZE), renderableRight);
+        Avatar avatar = new Avatar(topLeftCorner, Vector2.ONES.mult(AVATAR_SIZE),
+                imageReader.readImage(AVATAR_IMAGE,true));
         avatar.inputListener = inputListener;
         avatar.setTag(AVATAR_TAG);
         gameObjects.addGameObject(avatar, layer);
@@ -107,11 +103,11 @@ public class Avatar extends GameObject {
         float xVel = 0;
         if (inputListener.isKeyPressed(KeyEvent.VK_LEFT)) {
             xVel -= VELOCITY_X;
-            renderer().setRenderable(renderableLeft);
+            renderer().setIsFlippedHorizontally(true);
         }
         if (inputListener.isKeyPressed(KeyEvent.VK_RIGHT)) {
             xVel += VELOCITY_X;
-            renderer().setRenderable(renderableRight);
+            renderer().setIsFlippedHorizontally(false);
         }
         transform().setVelocityX(xVel);
     }
