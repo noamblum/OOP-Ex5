@@ -74,7 +74,19 @@ public class Terrain {
      * @param minX - The lower bound of the given range (will be rounded to a multiple of Block.SIZE).
      * @param maxX - The upper bound of the given range (will be rounded to a multiple of Block.SIZE).
      */
-    public void createInRange(int minX, int maxX) {
+    public void createInRange(int minX, int maxX){
+        minX = (int) WorldGridConvertor.worldToGrid(minX, 0).x();
+        maxX = (int) WorldGridConvertor.worldToGrid(maxX, 0).x();
+       createInGridRange(minX, maxX);
+    }
+
+    /**
+     * Creates ground blocks in the range between x and y x.coordinates.
+     *
+     * @param minX - The lower bound of the given range
+     * @param maxX - The upper bound of the given range
+     */
+    public void createInGridRange(int minX, int maxX) {
         for (int i = minX; i <= maxX; i++) {
             float baseGroundHeight = groundGridHeightAt(i);
             if (activeBlocks.containsKey(i)) continue;

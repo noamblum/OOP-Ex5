@@ -160,8 +160,8 @@ public class PepseGameManager extends GameManager {
     private void createTerrainInRange(Vector2 avatarGridCoordinates) {
         minTerrainX = (int) avatarGridCoordinates.x() - (renderWidth / 2);
         maxTerrainX = (int) avatarGridCoordinates.x() + (renderWidth / 2);
-        terrain.createInRange(minTerrainX,maxTerrainX);
-        trees.createInRange(minTerrainX,maxTerrainX);
+        terrain.createInGridRange(minTerrainX,maxTerrainX);
+        trees.createInGridRange(minTerrainX,maxTerrainX);
 
     }
 
