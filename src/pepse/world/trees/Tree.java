@@ -88,7 +88,19 @@ public class Tree {
      * @param minX - The lower bound of the given range (will be rounded to a multiple of Block.SIZE).
      * @param maxX - The upper bound of the given range (will be rounded to a multiple of Block.SIZE).
      */
-    public void createInRange(int minX, int maxX) {
+    public void createInRange(int minX, int maxX){
+        minX = (int) WorldGridConvertor.worldToGrid(minX, 0).x();
+        maxX = (int) WorldGridConvertor.worldToGrid(maxX, 0).x();
+        createInGridRange(minX, maxX);
+    }
+
+    /**
+     * This method creates trees in a given range of x-values.
+     *
+     * @param minX - The lower bound of the given range
+     * @param maxX - The upper bound of the given range
+     */
+    public void createInGridRange(int minX, int maxX) {
         // Calculates which trees should appear on screen, generating new ones if needed
         Set<Integer> newTrees = new HashSet<>();
         for (int i = minX; i <= maxX; i++) {
