@@ -17,6 +17,16 @@ public class ProceduralPerlinMap {
     private final int octaves;
     private final int divisor;
 
+    /**
+     * Constructor
+     * @param seed The map's seed
+     * @param blockWidth The width of a single block
+     * @param maxHeight The maximal height of the map
+     * @param amplitude The amplitude
+     * @param waveLength The wave length
+     * @param octaves How many octaves
+     * @param divisor The per octave divisor
+     */
     public ProceduralPerlinMap(int seed,
                                int blockWidth,
                                float maxHeight,
