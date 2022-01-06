@@ -1,11 +1,14 @@
 package pepse.world.trees;
 
+import danogl.GameObject;
+import danogl.collisions.Collision;
+import danogl.collisions.GameObjectCollection;
 import danogl.components.ScheduledTask;
 import danogl.components.Transition;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
+import pepse.util.ColorSupplier;
 import pepse.util.WorldGridConvertor;
-import pepse.world.Block;
 
 import java.awt.*;
 import java.util.Random;
@@ -13,85 +16,163 @@ import java.util.Random;
 /**
  * Responsible for the creation and management of leaves.
  */
-public class Leaf extends Block {
+public class Leaf extends GameObject {
 
     public static final String LEAF_TAG = "Leaf";
+
+    private static final Color LEAF_COLOR = new Color(50, 200, 30);
+
+    /**
+     * Animation constants
+     */
+    private static final int MAX_LIFE_TIME = 120;
+    private static final int MIN_LIFE_TIME = 0;
+    private static final float FADE_IN_TIME = 0.4f;
+    private static final int MIN_FADE_OUT_TIME = 5;
+    private static final int MAX_FADE_OUT_TIME = 10;
+    private static final float FALLING_VELOCITY = 50;
+    private static final float FALLING_TRANSITION_TIME = 1.2f;
+    private static final float STATIC_WIND_ANGLE = 20;
+    private static final float STATIC_WIND_TRANSITION_TIME = 2;
+
+
     private final Vector2 initialPosition;
+    private final GameObjectCollection objectCollection;
+    private final int staticLeafLayer;
+    private final int fallingLeafLayer;
     private final Random rand = new Random();
+    private Transition<?> staticLeafMovement;
+    private Transition<?> fallingLeafMovement;
+    private boolean isActive = false;
 
 
     /**
      * Creates a leaf and determine if the leaf will fall from the tree during the game.
-     * @param topLeftCorner initial position
+     *
+     * @param topLeftCorner    initial position
+     * @param objectCollection The global game object collection
+     * @param staticLeafLayer The layer for the leaves on the trees
+     * @param fallingLeafLayer THe layer for falling leaves
      */
-    public Leaf(Vector2 topLeftCorner){
-        super(WorldGridConvertor.gridToWorld(topLeftCorner), new RectangleRenderable( new Color(50, 200, 30)));
+    public Leaf(Vector2 topLeftCorner, GameObjectCollection objectCollection, int staticLeafLayer, int fallingLeafLayer) {
+        super(WorldGridConvertor.gridToWorld(topLeftCorner),
+                Vector2.ONES.mult(30), new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR)));
         initialPosition = WorldGridConvertor.gridToWorld(topLeftCorner);
-         this.physics().preventIntersectionsFromDirection(Vector2.UP);
-        this.physics().preventIntersectionsFromDirection(Vector2.LEFT);
-        this.physics().preventIntersectionsFromDirection(Vector2.RIGHT);
-        physics().setMass(1);
-        new ScheduledTask(this, rand.nextFloat(),false, this::wrapperForCreatingTransition);
+        this.objectCollection = objectCollection;
+        this.staticLeafLayer = staticLeafLayer;
+        this.fallingLeafLayer = fallingLeafLayer;
+        this.staticLeafMovement = null;
+        this.fallingLeafMovement = null;
         this.setTag(LEAF_TAG);
-        new ScheduledTask(this, rand.nextInt(30-10)+10, false, this::endOfLeafLife);
+        startLeafLife();
+    }
+
+    /**
+     * Stop all leaf movement when hitting the ground
+     *
+     * @param other The other ground block
+     * @param collision The collision object
+     */
+    @Override
+    public void onCollisionEnter(GameObject other, Collision collision) {
+        super.onCollisionEnter(other, collision);
+        if (staticLeafMovement != null) {
+            removeComponent(staticLeafMovement);
+            staticLeafMovement = null;
+        }
+        if (fallingLeafMovement != null) {
+            removeComponent(fallingLeafMovement);
+            fallingLeafMovement = null;
+        }
+        transform().setVelocityY(0);
+        transform().setVelocityX(0);
+    }
+
+    /**
+     * Sets whether the leaf animations can be activated
+     *
+     * @param active The state
+     */
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     /**
      * Responsible for the behavior of the leaf if it falls during the game.
      */
-    private void endOfLeafLife(){
-            fallingDown();
-            this.renderer().fadeOut(setFadeOutTime(rand),this::reposition);
+    private void endOfLeafLife() {
+        fallingDown();
+        this.renderer().fadeOut(getFadeOutTime(rand), this::startLeafLife);
     }
 
     /**
      * Sets the falling leaf at initial position after it touching the ground
      */
-    private void reposition(){
-       this.transform().setVelocityX(0);
+    private void startLeafLife() {
+        if (isActive) {
+            objectCollection.removeGameObject(this, fallingLeafLayer);
+            objectCollection.addGameObject(this, staticLeafLayer);
+        }
+        if (fallingLeafMovement != null) {
+            removeComponent(fallingLeafMovement);
+            fallingLeafMovement = null;
+        }
+        this.transform().setVelocityX(0);
         this.transform().setVelocityY(0);
-        this.renderer().fadeIn(0.1f);
+        this.renderer().fadeIn(FADE_IN_TIME);
         this.setCenter(initialPosition);
-        new ScheduledTask(this, rand.nextInt(30-10)+10, false, this::endOfLeafLife);
+        if (staticLeafMovement == null) {
+            new ScheduledTask(this, rand.nextFloat(), false, this::createWindMovement);
+        }
+
+        new ScheduledTask(this,
+                rand.nextInt(MAX_LIFE_TIME - MIN_LIFE_TIME + 1) + MIN_LIFE_TIME,
+                false,
+                this::endOfLeafLife);
     }
 
     /**
      * Sets the movement of a leaf while it is falling down.
      */
     private void fallingDown() {
-        this.transform().setVelocityY(50f);
-        new Transition<>(
+        if (isActive) {
+            objectCollection.removeGameObject(this, staticLeafLayer);
+            objectCollection.addGameObject(this, fallingLeafLayer);
+        }
+        this.transform().setVelocityY(FALLING_VELOCITY);
+        fallingLeafMovement = new Transition<>(
                 this,
                 this.transform()::setVelocityX,
-                -50f,
-                50f,
+                -FALLING_VELOCITY,
+                FALLING_VELOCITY,
                 Transition.CUBIC_INTERPOLATOR_FLOAT,
-                1.2f,
-                Transition.TransitionType.TRANSITION_BACK_AND_FORTH ,
+                FALLING_TRANSITION_TIME,
+                Transition.TransitionType.TRANSITION_BACK_AND_FORTH,
                 null
-                        );
+        );
     }
 
     /**
      * Random fade out time for a leaf.
+     *
      * @param random object for random a number
      * @return fade out time.
      */
-    private float setFadeOutTime(Random random) {
-        return  (float) random.nextInt(20-10)+10;
+    private float getFadeOutTime(Random random) {
+        return ((MAX_FADE_OUT_TIME - MIN_FADE_OUT_TIME) * random.nextFloat()) + MIN_FADE_OUT_TIME;
     }
 
     /**
      * Activating Transition function for the movement of the leaf while it is falling down.
      */
-    private void wrapperForCreatingTransition(){
-        new Transition<>(
+    private void createWindMovement() {
+        staticLeafMovement = new Transition<>(
                 this,
                 this.renderer()::setRenderableAngle,
-                -20f,
-                20f,
+                -STATIC_WIND_ANGLE,
+                STATIC_WIND_ANGLE,
                 Transition.CUBIC_INTERPOLATOR_FLOAT,
-                2,
+                STATIC_WIND_TRANSITION_TIME,
                 Transition.TransitionType.TRANSITION_BACK_AND_FORTH,
                 null
         );
