@@ -29,6 +29,9 @@ public class Terrain {
     private final Vector2 windowDimensions;
     private final ProceduralPerlinMap heightMap;
 
+    /**
+     * This map keeping the ground blocks and their location.
+     */
     private final Map<Integer, Set<GameObject>> activeBlocks = new HashMap<>();
 
     /**
@@ -93,6 +96,11 @@ public class Terrain {
         dropBlocksOutsideRange(minX, maxX);
     }
 
+    /**
+     *  Removes Blocks that are not in the range given.
+     * @param minX left edge on the screen.
+     * @param maxX right edge on the screen.
+     */
     private void dropBlocksOutsideRange(int minX, int maxX) {
         for (Iterator<Integer> it = activeBlocks.keySet().iterator(); it.hasNext() ;){
             Integer coordinate = it.next();

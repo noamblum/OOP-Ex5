@@ -23,6 +23,9 @@ import pepse.world.trees.Tree;
 import java.awt.*;
 import java.util.Random;
 
+/**
+ * Activating and managing the game.
+ */
 public class PepseGameManager extends GameManager {
 
     private static final float DAY_NIGHT_CYCLE_TIME = 10;
@@ -66,10 +69,13 @@ public class PepseGameManager extends GameManager {
         super(windowTitle);
     }
 
-    public PepseGameManager(String windowTitle, Vector2 windowDimensions) {
-        super(windowTitle, windowDimensions);
-    }
-
+    /**
+     * Initialize the game.
+     * @param imageReader - object responsible for upload the pictures.
+     * @param soundReader - object responsible for the sounds in the game.
+     * @param inputListener - object responsible for reading the keyboard commands.
+     * @param windowController - object responsible for managing the screen display.
+     */
     @Override
     public void initializeGame(ImageReader imageReader,
                                SoundReader soundReader,
@@ -105,6 +111,9 @@ public class PepseGameManager extends GameManager {
         defineLayerCollisions();
     }
 
+    /**
+     * creating a stub object in each layer.
+     */
     private void defineLayerCollisions() {
         for (int[] pair : COLLIDING_LAYERS){
             // Create a stub object so that layers are not empty when collisions are defined
@@ -117,6 +126,9 @@ public class PepseGameManager extends GameManager {
         }
     }
 
+    /**
+     * Display the Avatar energy.
+     */
     private void showAvatarEnergy() {
         TextRenderable text = new TextRenderable("0");
         GameObject playerLocation = new GameObject(Vector2.ZERO, Vector2.ONES.mult(30), text);
@@ -126,6 +138,10 @@ public class PepseGameManager extends GameManager {
         gameObjects().addGameObject(playerLocation, Layer.UI);
     }
 
+    /**
+     * Update specific values in each frame.
+     * @param deltaTime - Time for each update
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
@@ -137,6 +153,10 @@ public class PepseGameManager extends GameManager {
         }
     }
 
+    /**
+     * Creates terrain in a range that determine by the avatar coordinates.
+     * @param avatarGridCoordinates - coordinates of the Avatar.
+     */
     private void createTerrainInRange(Vector2 avatarGridCoordinates) {
         minTerrainX = (int) avatarGridCoordinates.x() - (renderWidth / 2);
         maxTerrainX = (int) avatarGridCoordinates.x() + (renderWidth / 2);
