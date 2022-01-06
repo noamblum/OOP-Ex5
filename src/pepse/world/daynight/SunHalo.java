@@ -13,6 +13,7 @@ import java.awt.*;
  */
 public class SunHalo{
     public static final String TAG = "SunHalo";
+    private static final float HALO_SIZE_FACTOR = 1.9f;
     private static GameObject sunHalo;
     private static GameObject sunToFollow;
     /**
@@ -32,7 +33,7 @@ public class SunHalo{
         sunToFollow = sun;
         sunHalo = new GameObject(
                 Vector2.ZERO,
-                Sun.sunDimensions.mult(1.2f),
+                Sun.sunDimensions.mult(HALO_SIZE_FACTOR),
                 new OvalRenderable(color));
         sunHalo.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sunHalo, layer);

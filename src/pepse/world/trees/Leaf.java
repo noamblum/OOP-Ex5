@@ -36,18 +36,49 @@ public class Leaf extends GameObject {
     private static final float STATIC_WIND_TRANSITION_TIME = 2;
 
 
+    /**
+     * The leaf's position on the tree
+     */
     private final Vector2 initialPosition;
+
+    /**
+     * The global game object collection
+     */
     private final GameObjectCollection objectCollection;
+
+    /**
+     * The layer in which the leaves are in while on the tree
+     */
     private final int staticLeafLayer;
+
+    /**
+     * The layer of the leaves that can hit the ground
+     */
     private final int fallingLeafLayer;
+
+    /**
+     * The randomizer used to generate life cycle times
+     */
     private final Random rand = new Random();
+
+    /**
+     * The leaf's movement in the wind
+     */
     private Transition<?> staticLeafMovement;
+
+    /**
+     * The leaf's sideways movement while falling down
+     */
     private Transition<?> fallingLeafMovement;
+
+    /**
+     * A flag specifying whether the leaf should add itself to the game when animations are complete
+     */
     private boolean isActive = false;
 
 
     /**
-     * Creates a leaf and determine if the leaf will fall from the tree during the game.
+     * Constructor
      *
      * @param topLeftCorner    initial position
      * @param objectCollection The global game object collection
@@ -98,7 +129,7 @@ public class Leaf extends GameObject {
     }
 
     /**
-     * Responsible for the behavior of the leaf if it falls during the game.
+     * Makes the leaf fall and fade out
      */
     private void endOfLeafLife() {
         fallingDown();
@@ -106,7 +137,7 @@ public class Leaf extends GameObject {
     }
 
     /**
-     * Sets the falling leaf at initial position after it touching the ground
+     * Starts moving in the wind and falling after a set time
      */
     private void startLeafLife() {
         if (isActive) {
@@ -163,7 +194,7 @@ public class Leaf extends GameObject {
     }
 
     /**
-     * Activating Transition function for the movement of the leaf while it is falling down.
+     * Activating Transition function for the movement of the leaf while it is on the tree.
      */
     private void createWindMovement() {
         staticLeafMovement = new Transition<>(
