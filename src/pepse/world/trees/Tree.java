@@ -7,6 +7,7 @@ import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 import pepse.util.WorldGridConvertor;
 import pepse.world.Block;
+import pepse.world.Terrain;
 
 import java.awt.*;
 import java.util.*;
@@ -84,7 +85,7 @@ public class Tree {
         Set<GameObject> blockSet = treesInWorld.get(x);
         for(GameObject block : blockSet){
             int layer = block.getTag().equals(Leaf.LEAF_TAG) ?
-                    Layer.STATIC_OBJECTS + 1 : Layer.STATIC_OBJECTS;
+                    Layer.DEFAULT   : Layer.STATIC_OBJECTS;
             objectCollection.addGameObject(block, layer);
         }
     }
@@ -97,7 +98,7 @@ public class Tree {
         Set<GameObject> blockSet = treesInWorld.get(x);
         for(GameObject block : blockSet){
             int layer = block.getTag().equals(Leaf.LEAF_TAG) ?
-                    Layer.STATIC_OBJECTS + 1 : Layer.STATIC_OBJECTS;
+                    Layer.DEFAULT : Layer.STATIC_OBJECTS;
             objectCollection.removeGameObject(block, layer);
         }
     }
@@ -117,7 +118,7 @@ public class Tree {
             for (int j = -2 ; j < 3; j++) {
                 for (int k = -2 ; k < 3; k++) {
                     Vector2 LeafPos = new Vector2(index + j, groundHeight - TREE_HEIGHT + k);
-                    GameObject newLeaf = Leaf.create(LeafPos);
+                    GameObject newLeaf = new Leaf(LeafPos);
                     set.add(newLeaf);
                 }
             }

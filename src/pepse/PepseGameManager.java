@@ -26,7 +26,7 @@ import java.util.Random;
 public class PepseGameManager extends GameManager {
 
     private static final float DAY_NIGHT_CYCLE_TIME = 10;
-    private static final int TARGET_FRAMERATE = 60;
+    private static final int TARGET_FRAMERATE = 30;
     private static final Color SUN_HALO_COLOR = new Color(255, 255, 0, 20);
 
     private Vector2 windowGridDimensions;
@@ -75,7 +75,7 @@ public class PepseGameManager extends GameManager {
         SunHalo.create(gameObjects(),sun, SUN_HALO_COLOR, Layer.BACKGROUND + 10);
 
 
-        terrain = new Terrain(gameObjects(),Layer.STATIC_OBJECTS,windowController.getWindowDimensions(),
+        terrain = new Terrain(gameObjects(),Layer.STATIC_OBJECTS, windowController.getWindowDimensions(),
                 new Random().nextInt());
         trees = new Tree(gameObjects(), terrain::groundGridHeightAt);
         Vector2 avatarStartingPosition = new Vector2(0, terrain.groundHeightAt(0) - Avatar.AVATAR_SIZE);
