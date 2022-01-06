@@ -1,0 +1,27 @@
+noam_blum
+alon_ben_zion
+
+Infinity World Creation:
+Tree and Terrain classes are capable to create and manage themselves:
+when given a specific range,adding randomly to GameObjectCollection in that range, and removing all other instances
+that outside the range.
+PepsiGameManager responsible to give Those classes the range. the range will be related to the position of the Avatar.
+By the way Random works, we can "random" back the trees and the terrain to be exactly where they were before in each
+segment of the world.
+
+Tree class:
+For creating trees in the game we decided to split the creation of the leaves and the creation of the tree trunk.
+it helped us to manage the attributes of the leaves- swing in the wind, fall down and fade out, fade in and return to the
+initial position.
+The tree class is getting a range to put put tree instances in it, it creates treeTrunks - Blocks in brown color, and place
+them randomly and creates leaves tha are instances of Leaf, around the trunk.
+We keep the instances of the components of each tree in a set, and each set as a value in a hash map that the key is
+the x coordinate of the tree in the map.
+It is helping us to delete those objects when needed - When the x coordinate of a tree is out of the range game manager
+updated.
+
+The differences between UML_start and UML_end:
+grid coordination.
+Perllin class
+Leaf inherits from game object and tree class is not containing leaf class.
+Terrain contains ProceduralPerlinMap and is not using it.
