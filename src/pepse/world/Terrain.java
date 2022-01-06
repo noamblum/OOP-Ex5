@@ -84,7 +84,9 @@ public class Terrain {
                 Block newBlock = new Block(WorldGridConvertor.gridToWorld(i, j), groundBlockColor);
                 newBlock.setTag(TAG);
                 groundBlocks.add(newBlock);
-                gameObjects.addGameObject(newBlock, groundLayer);
+                // Only put the top two blocks in the colliding layer
+                int layer = j <= baseGroundHeight + 1 ? groundLayer : groundLayer + 1;
+                gameObjects.addGameObject(newBlock, layer);
             }
             activeBlocks.put(i, groundBlocks);
         }
