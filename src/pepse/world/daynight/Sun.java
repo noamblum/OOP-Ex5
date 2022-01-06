@@ -22,6 +22,21 @@ public class Sun {
      */
     private static final float SUN_ELLIPSE_FACTOR = 1.5f;
 
+    /**
+     * How much of the screen the sun circles
+     */
+    private static final float SUN_RADIUS_FACTOR = 1.6f;
+
+    /**
+     * Where to position the cycle center on th Y axis
+     */
+    private static final float SUN_CENTER_X = 0.5f;
+
+    /**
+     * Where to position the cycle center on th Y axis
+     */
+    private static final float SUN_CENTER_Y = 0.65f;
+
     private static GameObject sun;
     private static Vector2 WindowDimensions;
     private static float cycleRadius;
@@ -47,7 +62,7 @@ public class Sun {
                 sunDimensions,
                 new OvalRenderable(Color.YELLOW));
         WindowDimensions = windowDimensions;
-        cycleRadius = windowDimensions.y() / 1.6f;
+        cycleRadius = windowDimensions.y() / SUN_RADIUS_FACTOR;
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(sun, layer);
         new Transition<>(
@@ -72,7 +87,7 @@ public class Sun {
     private static void setSunPosition(float angleInSky) {
         Vector2 directionFromCenter =
                 Vector2.UP.mult(cycleRadius).rotated(angleInSky).multX(SUN_ELLIPSE_FACTOR);
-        Vector2 cycleMidPoint = WindowDimensions.multX(0.5f).multY(0.65f);
+        Vector2 cycleMidPoint = WindowDimensions.multX(SUN_CENTER_X).multY(SUN_CENTER_Y);
         sun.setCenter(cycleMidPoint.add(directionFromCenter));
     }
 
