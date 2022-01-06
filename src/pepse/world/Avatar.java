@@ -72,8 +72,13 @@ public class Avatar extends GameObject {
      */
     public float getCurrentFlightEnergy(){return currentFlightEnergy;}
 
+    /**
+     * Handle various space key presses
+     */
     private void handleJumpAndFlight() {
-        if (getVelocity().y() > MAX_VELOCITY_Y) {
+
+        // Keep falling speed within limit
+        if (Math.abs(getVelocity().y()) > MAX_VELOCITY_Y) {
             Vector2 maxVelocity = new Vector2(getVelocity().x(), MAX_VELOCITY_Y);
             setVelocity(maxVelocity);
         }

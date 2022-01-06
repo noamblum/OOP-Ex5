@@ -29,10 +29,24 @@ public class Tree {
     private static final int MIN_LEAF_RADIUS = 1;
     private static final int MAX_LEAF_RADIUS = 3;
 
+    /**
+     * The global seed for generating the forest
+     */
     private final int seed;
 
+    /**
+     * A map holding the currently loaded trees
+     */
     private final Map<Integer, Set<GameObject>> activeTrees = new HashMap<>();
+
+    /**
+     * A set containing all the locations where there should be trees
+     */
     private final Set<Integer> treesInWorld = new HashSet<>();
+
+    /**
+     * The global game object collection
+     */
     private final GameObjectCollection objectCollection;
     private final Function<Float, Float> getTreeBaseHeight;
 
@@ -75,6 +89,7 @@ public class Tree {
      * @param maxX - The upper bound of the given range (will be rounded to a multiple of Block.SIZE).
      */
     public void createInRange(int minX, int maxX) {
+        // Calculates which trees should appear on screen, generating new ones if needed
         Set<Integer> newTrees = new HashSet<>();
         for (int i = minX; i <= maxX; i++) {
             Random rand = new Random(Objects.hash(seed, i));
@@ -86,6 +101,8 @@ public class Tree {
                 newTrees.add(i);
             }
         }
+
+        // Add the new trees to the screen
         newTrees.forEach(this::addTreeAt);
         Set<Integer> treesToRemove = new HashSet<>();
         for(Integer tree : activeTrees.keySet()){
@@ -97,8 +114,8 @@ public class Tree {
     }
 
     /**
-     * adding trees to object collection
-     * @param x - represent a tree in the set
+     * Create a tree in the specified coordinate
+     * @param x - The location to generate the tree in
      */
     private void addTreeAt(int x){
         if (activeTrees.containsKey(x)) return;
@@ -112,10 +129,19 @@ public class Tree {
         activeTrees.put(x, treeBlockSet);
     }
 
+    /**
+     * Generate leaves for the tree at the specified location
+     * @param x The location
+     * @param treeBlockSet The set to add the leaf blocks to
+     * @param treeGenerationRandom The randomizer used in the tree generation
+     * @param treeHeight The tree's height
+     * @param groundHeight The ground height at the tree location
+     */
     private void buildLeaves(int x, Set<GameObject> treeBlockSet, Random treeGenerationRandom, int treeHeight, int groundHeight) {
         for (int i = -MAX_LEAF_RADIUS ; i < MAX_LEAF_RADIUS; i++) {
             for (int j = -MAX_LEAF_RADIUS ; j < MAX_LEAF_RADIUS; j++) {
                 boolean leafInMinimalRange = Math.abs(i) <= MIN_LEAF_RADIUS && Math.abs(j) <= MIN_LEAF_RADIUS;
+                // If within minimal radius always add leaves, otherwise randomly do not create leaves
                 if (leafInMinimalRange || treeGenerationRandom.nextInt(LEAF_GENERATION_CHANCE) != 0) {
                     Vector2 LeafPos = new Vector2(x + i + 1, groundHeight - treeHeight + j);
                     Leaf newLeaf = new Leaf(LeafPos, objectCollection, staticLeafLayer, fallingLeafLayer);
@@ -127,6 +153,13 @@ public class Tree {
         }
     }
 
+    /**
+     * Create the trunk
+     * @param x The tree's location
+     * @param treeBlockSet The set to add trunk blocks to
+     * @param treeHeight The tree's height
+     * @param groundHeight THe ground height at the tree's location
+     */
     private void buildTreeTrunk(int x, Set<GameObject> treeBlockSet, int treeHeight, int groundHeight) {
         Renderable trunkRenderable = new RectangleRenderable(TREE_TRUNK_COLOR);
         for (int j = groundHeight - treeHeight; j < groundHeight; j++) {
@@ -137,8 +170,8 @@ public class Tree {
     }
 
     /**
-     * removing trees from object collection
-     * @param x - represent a tree in the set
+     * Unload the tree in the specified location
+     * @param x The location to remove the tree at
      */
     private void removeTreeAt(int x){
         Set<GameObject> blockSet = activeTrees.get(x);
