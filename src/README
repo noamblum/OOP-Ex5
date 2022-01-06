@@ -21,7 +21,15 @@ It is helping us to delete those objects when needed - When the x coordinate of 
 updated.
 
 The differences between UML_start and UML_end:
-grid coordination.
+The differences between the files embodies the dilemmas we face with during our work.
+(1) grid coordination:
+    We decided to create a class that converts between continuous world coordinates and discrete block grid coordinates.
+    Terrain and tree use block class for determine the dimensions of the their instances, and because those
+    objects are constantly changing, it is easier to work with grid values.
 Perllin class
-Leaf inherits from game object and tree class is not containing leaf class.
+(3) Leaf inherits from game object and tree class is not containing leaf class:
+    Helped us to mange the attributes of each part of the tree separately - The trunk is static, while
+    the leaves have timeLife and some of them falling from the tree and returning to initial position
+    after a set up time.
 Terrain contains ProceduralPerlinMap and is not using it.
+
