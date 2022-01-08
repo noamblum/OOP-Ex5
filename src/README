@@ -1,27 +1,6 @@
 noam.blum1
-alon_ben_zion
+alonbentzi
 
-Infinite World Generation:
-Tree and Terrain classes are self contained and generate their respective game objects - whenever
-createInRange is called the terrain/trees get generated in the specified range and get unloaded outside that
-range.
-PepseGameManager responsible to give these classes the required range. The range is calculated based on the
-position of the Avatar.
-The generation of these objects in pseudo-random and is reproducible based on a seed generated during game
-initialization. Terrain generation is based on a Perlin Noise function, and tree generation is based on a
-seeded RNG which uses the global seed and the location as its seed.
-
-Tree class:
-For creating trees in the game we decided to split the creation of the leaves and the creation of the tree
-trunk.
-it helped us to manage the attributes of the leaves - swing in the wind, fall down and fade out, fade in and
-return to the initial position.
-The tree class is getting a range to put tree instances in. It creates treeTrunks - Blocks in brown color,
-places them randomly and creates leaves, which are instances of the Leaf class, around the top of the trunk.
-We keep the instances of the components of each tree in a set, and each set as a value in a hash map in which
-the key is the x coordinate of the tree in the map.
-It is helping us to delete those objects when needed - When the x coordinate of a tree is outside the range
-game manager provided.
 
 The differences between UML_start and UML_end:
 The differences between the files embodies the dilemmas we face with during our work.
@@ -43,3 +22,39 @@ The differences between the files embodies the dilemmas we face with during our 
 (4) Terrain contains an instance of ProceduralPerlinMap and is not using it, since ProceduralPerlinMap is not
     meant to be used as a static class.
 
+
+Infinite World Generation:
+Tree and Terrain classes are self contained and generate their respective game objects - whenever
+createInRange is called the terrain/trees get generated in the specified range and get unloaded outside that
+range.
+PepseGameManager responsible to give these classes the required range. The range is calculated based on the
+position of the Avatar.
+The generation of these objects in pseudo-random and is reproducible based on a seed generated during game
+initialization. Terrain generation is based on a Perlin Noise function, and tree generation is based on a
+seeded RNG which uses the global seed and the location as its seed.
+
+
+Tree class:
+For creating trees in the game we decided to split the creation of the leaves and the creation of the tree
+trunk.
+it helped us to manage the attributes of the leaves - swing in the wind, fall down and fade out, fade in and
+return to the initial position.
+The tree class is getting a range to put tree instances in. It creates treeTrunks - Blocks in brown color,
+places them randomly and creates leaves, which are instances of the Leaf class, around the top of the trunk.
+We keep the instances of the components of each tree in a set, and each set as a value in a hash map in which
+the key is the x coordinate of the tree in the map.
+It is helping us to delete those objects when needed - When the x coordinate of a tree is outside the range
+game manager provided.
+
+
+Our main design concept was to keep as much of the objects' micromanagement as possible out of the GameManager
+class. The two most prominent examples for it are Terrain and Tree - instead of having the game manager keep
+track of the Avatar, and then making the decisions "load terrain from X to Y and unload from W to Z" the
+manager simply notifies these classes "This is your new operating range, do whatever is needed to make it
+work". Using this pattern allowed us to encapsulate each component of the world, and be able to test it
+completely independently from all other components.
+Another decision we made was to have the Tree and Terrain classes not know about each other. In general, Tree
+needs to know the height of the terrain, to generate the trees on top of the ground, so in theory Tree class
+needs to use Terrain class. We decided to instead have the Tree class use a functional interface to get the
+base height for the tree and have the GameManger send the appropriate function from the Terrain instance to it
+which simplified our dependency tree.
