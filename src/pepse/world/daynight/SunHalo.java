@@ -20,16 +20,15 @@ public class SunHalo{
      * This function creates a halo around a given object that represents the sun.
      * The halo will be tied to the given sun, and will always move with it.
      * @param gameObjects - The collection of all participating game objects.
+     * @param layer - The number of the layer to which the created halo should be added.
      * @param sun - A game object representing the sun (it will be followed by the created game object).
      * @param color - The color of the halo.
-     * @param layer - The number of the layer to which the created halo should be added.
      * @return  A new game object representing the sun's halo.
      */
     public static GameObject create(
             GameObjectCollection gameObjects,
-            GameObject sun,
-            Color color,
-            int layer){
+            int layer, GameObject sun,
+            Color color){
         sunToFollow = sun;
         sunHalo = new GameObject(
                 Vector2.ZERO,

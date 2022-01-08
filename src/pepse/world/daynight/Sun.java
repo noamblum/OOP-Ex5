@@ -45,18 +45,18 @@ public class Sun {
     /**
      * Creates the Object Sun and sets its movement over the screen
      *
-     * @param windowDimensions - screen dimensions
-     * @param cycleLength      - Total time for a cycle
      * @param gameObjects      - gameObject
      * @param layer            - represents the Layer which the sun will be placed.
+     * @param windowDimensions - screen dimensions
+     * @param cycleLength      - Total time for a cycle
      * @return - An object of Sun.
      */
 
     public static GameObject create(
-            Vector2 windowDimensions,
-            float cycleLength,
             GameObjectCollection gameObjects,
-            int layer) {
+            int layer,
+            Vector2 windowDimensions,
+            float cycleLength) {
         sun = new GameObject(
                 Vector2.ZERO,
                 sunDimensions,
