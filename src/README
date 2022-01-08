@@ -1,35 +1,45 @@
 noam_blum
 alon_ben_zion
 
-Infinity World Creation:
-Tree and Terrain classes are capable to create and manage themselves:
-when given a specific range,adding randomly to GameObjectCollection in that range, and removing all other instances
-that outside the range.
-PepsiGameManager responsible to give Those classes the range. the range will be related to the position of the Avatar.
-By the way Random works, we can "random" back the trees and the terrain to be exactly where they were before in each
-segment of the world.
+Infinite World Generation:
+Tree and Terrain classes are self contained and generate their respective game objects - whenever
+createInRange is called the terrain/trees get generated in the specified range and get unloaded outside that
+range.
+PepseGameManager responsible to give these classes the required range. The range is calculated based on the
+position of the Avatar.
+The generation of these objects in pseudo-random and is reproducible based on a seed generated during game
+initialization. Terrain generation is based on a Perlin Noise function, and tree generation is based on a
+seeded RNG which uses the global seed and the location as its seed.
 
 Tree class:
-For creating trees in the game we decided to split the creation of the leaves and the creation of the tree trunk.
-it helped us to manage the attributes of the leaves- swing in the wind, fall down and fade out, fade in and return to the
-initial position.
-The tree class is getting a range to put put tree instances in it, it creates treeTrunks - Blocks in brown color, and place
-them randomly and creates leaves tha are instances of Leaf, around the trunk.
-We keep the instances of the components of each tree in a set, and each set as a value in a hash map that the key is
-the x coordinate of the tree in the map.
-It is helping us to delete those objects when needed - When the x coordinate of a tree is out of the range game manager
-updated.
+For creating trees in the game we decided to split the creation of the leaves and the creation of the tree
+trunk.
+it helped us to manage the attributes of the leaves - swing in the wind, fall down and fade out, fade in and
+return to the initial position.
+The tree class is getting a range to put tree instances in. It creates treeTrunks - Blocks in brown color,
+places them randomly and creates leaves, which are instances of the Leaf class, around the top of the trunk.
+We keep the instances of the components of each tree in a set, and each set as a value in a hash map in which
+the key is the x coordinate of the tree in the map.
+It is helping us to delete those objects when needed - When the x coordinate of a tree is outside the range
+game manager provided.
 
 The differences between UML_start and UML_end:
 The differences between the files embodies the dilemmas we face with during our work.
 (1) grid coordination:
-    We decided to create a class that converts between continuous world coordinates and discrete block grid coordinates.
+    We decided to create a class that converts between continuous world coordinates and discrete block grid
+    coordinates.
     Terrain and tree use block class for determine the dimensions of the their instances, and because those
     objects are constantly changing, it is easier to work with grid values.
-Perllin class
+(2) Perlin Noise Generator:
+    We initially thought that the perlin noise generation will be dine using a single class which will act
+    like a function, but in order to implement it we had to create two classes, one that generates finite
+    blocks of perlin noise, and another that takes the blocks, creates them in overlapping ranges and for each
+    x coordinate returns the average of the two noise maps in the requested location.
 (3) Leaf inherits from game object and tree class is not containing leaf class:
     Helped us to mange the attributes of each part of the tree separately - The trunk is static, while
     the leaves have timeLife and some of them falling from the tree and returning to initial position
-    after a set up time.
-Terrain contains ProceduralPerlinMap and is not using it.
+    after a set up time. It also helped performance, since it allowed as to calculate collisions just between
+    falling leaves and the ground, instead of with every block the tree consists of.
+(4) Terrain contains an instance of ProceduralPerlinMap and is not using it, since ProceduralPerlinMap is not
+    meant to be used as a static class.
 
